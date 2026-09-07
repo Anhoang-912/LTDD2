@@ -1,11 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import SplashScreen from './src/screens/SplashScreen';
+import OnboardingScreen from './src/screens/OnboardingScreen';
 
 export default function App() {
+  // Thứ tự màn hình: Splash hiển thị đầu tiên -> sau đó đến Onboarding
+  const [stage, setStage] = useState('splash'); // 'splash' | 'onboarding'
+
+  const handleSplashFinish = () => {
+    setStage('onboarding');
+  };
+
+  const handleOnboardingFinish = () => {
+    // Khi hoàn tất onboarding, quay lại splash để xem lại từ đầu (hoặc mở trang chủ)
+    setStage('splash');
+  };
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      {stage === 'splash' ? (
+        <SplashScreen onFinish={handleSplashFinish} />
+      ) : (
+        <OnboardingScreen onFinish={handleOnboardingFinish} />
+      )}
     </View>
   );
 }
@@ -13,8 +30,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
   },
 });
