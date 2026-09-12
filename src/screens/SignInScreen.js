@@ -38,20 +38,12 @@ export default function SignInScreen({
   }, [registeredUser]);
 
   const handleLogin = () => {
-    // Nếu chưa đăng ký tài khoản nào và chưa nhập gì
-    if (!registeredUser && !email.trim()) {
-      const msg = 'Bạn cần đăng ký tài khoản trước khi đăng nhập!';
-      if (Platform.OS === 'web') {
-        window.alert(msg);
-      } else {
-        Alert.alert('Chưa có tài khoản', msg);
-      }
-      onSignUp?.();
-      return;
-    }
+    const inputEmail = email.trim();
+    const inputPassword = password.trim();
 
-    if (!email.trim() || !password.trim()) {
-      const msg = 'Vui lòng nhập đầy đủ Email và Mật khẩu!';
+    // Nếu chưa nhập email hoặc mật khẩu
+    if (!inputEmail || !inputPassword) {
+      const msg = 'Vui lòng nhập đầy đủ Email và Mật khẩu (hoặc bấm Sign up để đăng ký tài khoản mới)!';
       if (Platform.OS === 'web') {
         window.alert(msg);
       } else {
@@ -60,16 +52,20 @@ export default function SignInScreen({
       return;
     }
 
-    if (registeredUser && registeredUser.email !== email.trim()) {
-      const msg = 'Email không khớp với tài khoản đã đăng ký!';
-      if (Platform.OS === 'web') {
-        window.alert(msg);
-      } else {
-        Alert.alert('Lỗi đăng nhập', msg);
+    // Nếu đã đăng ký tài khoản qua Sign Up thì kiểm tra xem có khớp không
+    if (registeredUser) {
+      if (registeredUser.email !== inputEmail || (registeredUser.password && registeredUser.password !== inputPassword)) {
+        const msg = 'Email hoặc mật khẩu không chính xác với tài khoản đã đăng ký!';
+        if (Platform.OS === 'web') {
+          window.alert(msg);
+        } else {
+          Alert.alert('Lỗi đăng nhập', msg);
+        }
+        return;
       }
-      return;
     }
 
+    // Đăng nhập thành công -> tiếp tục đến màn hình Verification
     onLoginSuccess?.();
   };
 
