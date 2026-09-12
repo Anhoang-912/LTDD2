@@ -10,16 +10,39 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 
-export default function SignUpScreen({ onSignIn, onSignUpSuccess }) {
+export default function SignUpScreen({ onSignIn, onSignUpSuccess, onBack }) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleSignUp = () => {
+    const finalEmail = email.trim() || 'abc@email.com';
+    const finalPassword = password.trim() || '123456';
+    const finalName = fullName.trim() || 'Alex Lee';
+
+    if (confirmPassword && password !== confirmPassword) {
+      const msg = 'Mật khẩu xác nhận không trùng khớp!';
+      if (Platform.OS === 'web') {
+        window.alert(msg);
+      } else {
+        Alert.alert('Lỗi', msg);
+      }
+      return;
+    }
+
+    onSignUpSuccess?.({
+      fullName: finalName,
+      email: finalEmail,
+      password: finalPassword,
+    });
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -34,11 +57,21 @@ export default function SignUpScreen({ onSignIn, onSignUpSuccess }) {
           {/* Back Button */}
           <TouchableOpacity
             style={styles.backBtn}
-            onPress={onSignIn}
+            onPress={onBack || onSignIn}
             activeOpacity={0.7}
           >
             <Ionicons name="arrow-back" size={24} color="#120D26" />
           </TouchableOpacity>
+
+          {/* Logo & Brand Name */}
+          <View style={styles.logoBox}>
+            <Image
+              source={require('../assets/image/Group.png')}
+              style={styles.logoIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.brandTitle}>EventHub</Text>
+          </View>
 
           {/* Heading */}
           <Text style={styles.heading}>Sign up</Text>
@@ -79,6 +112,10 @@ export default function SignUpScreen({ onSignIn, onSignUpSuccess }) {
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
+              autoCapitalize="none"
+              autoCorrect={false}
+              textContentType="oneTimeCode"
+              autoComplete="off"
             />
             <TouchableOpacity
               onPress={() => setShowPassword(!showPassword)}
@@ -102,6 +139,10 @@ export default function SignUpScreen({ onSignIn, onSignUpSuccess }) {
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry={!showConfirmPassword}
+              autoCapitalize="none"
+              autoCorrect={false}
+              textContentType="oneTimeCode"
+              autoComplete="off"
             />
             <TouchableOpacity
               onPress={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -118,7 +159,7 @@ export default function SignUpScreen({ onSignIn, onSignUpSuccess }) {
           {/* Sign Up Button */}
           <TouchableOpacity
             activeOpacity={0.85}
-            onPress={onSignUpSuccess}
+            onPress={handleSignUp}
             style={styles.mainBtn}
           >
             <View style={styles.mainBtnContent}>
@@ -182,7 +223,22 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     justifyContent: 'center',
+    marginBottom: 8,
+  },
+  logoBox: {
+    alignItems: 'center',
     marginBottom: 16,
+  },
+  logoIcon: {
+    width: 50,
+    height: 53,
+    marginBottom: 6,
+  },
+  brandTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#120D26',
+    letterSpacing: -0.5,
   },
   heading: {
     fontSize: 24,

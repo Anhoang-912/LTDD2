@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,14 +11,67 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 
-export default function SignInScreen({ onSignUp, onLoginSuccess }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function SignInScreen({
+  onSignUp,
+  onLoginSuccess,
+  onForgotPassword,
+  registeredUser,
+  onBack,
+}) {
+  const [email, setEmail] = useState(registeredUser?.email || '');
+  const [password, setPassword] = useState(registeredUser?.password || '');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+
+  // Cập nhật khi có tài khoản đăng ký mới
+  useEffect(() => {
+    if (registeredUser?.email) {
+      setEmail(registeredUser.email);
+    }
+    if (registeredUser?.password) {
+      setPassword(registeredUser.password);
+    }
+  }, [registeredUser]);
+
+  const handleLogin = () => {
+    // Nếu chưa đăng ký tài khoản nào và chưa nhập gì
+    if (!registeredUser && !email.trim()) {
+      const msg = 'Bạn cần đăng ký tài khoản trước khi đăng nhập!';
+      if (Platform.OS === 'web') {
+        window.alert(msg);
+      } else {
+        Alert.alert('Chưa có tài khoản', msg);
+      }
+      onSignUp?.();
+      return;
+    }
+
+    if (!email.trim() || !password.trim()) {
+      const msg = 'Vui lòng nhập đầy đủ Email và Mật khẩu!';
+      if (Platform.OS === 'web') {
+        window.alert(msg);
+      } else {
+        Alert.alert('Thông báo', msg);
+      }
+      return;
+    }
+
+    if (registeredUser && registeredUser.email !== email.trim()) {
+      const msg = 'Email không khớp với tài khoản đã đăng ký!';
+      if (Platform.OS === 'web') {
+        window.alert(msg);
+      } else {
+        Alert.alert('Lỗi đăng nhập', msg);
+      }
+      return;
+    }
+
+    onLoginSuccess?.();
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -30,13 +83,23 @@ export default function SignInScreen({ onSignUp, onLoginSuccess }) {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
+          {onBack && (
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={onBack}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="arrow-back" size={24} color="#120D26" />
+            </TouchableOpacity>
+          )}
+
           {/* Logo & Brand Name */}
           <View style={styles.logoBox}>
-            <View style={styles.emblemCircle}>
-              <View style={styles.emblemOuterRing} />
-              <View style={styles.emblemBar} />
-              <View style={styles.emblemInnerLoop} />
-            </View>
+            <Image
+              source={require('../assets/image/Group.png')}
+              style={styles.logoIcon}
+              resizeMode="contain"
+            />
             <Text style={styles.brandTitle}>EventHub</Text>
           </View>
 
@@ -67,6 +130,10 @@ export default function SignInScreen({ onSignUp, onLoginSuccess }) {
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
+              autoCapitalize="none"
+              autoCorrect={false}
+              textContentType="oneTimeCode"
+              autoComplete="off"
             />
             <TouchableOpacity
               onPress={() => setShowPassword(!showPassword)}
@@ -93,7 +160,7 @@ export default function SignInScreen({ onSignUp, onLoginSuccess }) {
               <Text style={styles.rememberMeText}>Remember Me</Text>
             </View>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onForgotPassword} activeOpacity={0.7}>
               <Text style={styles.forgotText}>Forgot Password?</Text>
             </TouchableOpacity>
           </View>
@@ -101,7 +168,7 @@ export default function SignInScreen({ onSignUp, onLoginSuccess }) {
           {/* Sign In Button */}
           <TouchableOpacity
             activeOpacity={0.85}
-            onPress={onLoginSuccess}
+            onPress={handleLogin}
             style={styles.mainBtn}
           >
             <View style={styles.mainBtnContent}>
@@ -161,53 +228,25 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 30,
   },
+  backBtn: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
   logoBox: {
     alignItems: 'center',
     marginTop: 10,
-    marginBottom: 24,
+    marginBottom: 20,
   },
-  emblemCircle: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-    marginBottom: 6,
-  },
-  emblemOuterRing: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    borderWidth: 6,
-    borderColor: '#00D1FF',
-    borderRightColor: '#5669FF',
-    transform: [{ rotate: '-35deg' }],
-  },
-  emblemBar: {
-    position: 'absolute',
-    width: 26,
-    height: 5,
-    backgroundColor: '#00D1FF',
-    borderRadius: 2,
-    top: 24,
-    left: 14,
-  },
-  emblemInnerLoop: {
-    position: 'absolute',
-    width: 22,
-    height: 18,
-    borderTopLeftRadius: 9,
-    borderTopRightRadius: 9,
-    borderWidth: 4,
-    borderColor: '#00D1FF',
-    borderBottomColor: 'transparent',
-    top: 10,
-    left: 14,
+  logoIcon: {
+    width: 56,
+    height: 59,
+    marginBottom: 8,
   },
   brandTitle: {
-    fontSize: 30,
-    fontWeight: '800',
+    fontSize: 32,
+    fontWeight: '700',
     color: '#120D26',
     letterSpacing: -0.5,
   },
