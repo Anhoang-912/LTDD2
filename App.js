@@ -7,6 +7,7 @@ import Onboarding3Screen from './src/screens/Onboarding3Screen';
 import SignInScreen from './src/screens/SignInScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
 import VerificationScreen from './src/screens/VerificationScreen';
+import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
 
 export default function App() {
   // 1. Luôn khởi đầu từ màn hình 'splash'
@@ -52,7 +53,7 @@ export default function App() {
           onBack={() => setCurrentScreen('onboarding3')}
           onSignUp={() => setCurrentScreen('signup')}
           onLoginSuccess={() => setCurrentScreen('verification')}
-          onForgotPassword={() => setCurrentScreen('verification')}
+          onForgotPassword={() => setCurrentScreen('resetPassword')}
         />
       )}
 
@@ -76,6 +77,17 @@ export default function App() {
           onBack={() => setCurrentScreen('signin')}
           onSuccess={(code) => {
             alert(`Xác thực thành công với mã: ${code}`);
+          }}
+        />
+      )}
+
+      {/* 8. Màn hình Reset Password (Khi nhấn Forgot Password ở Sign In) */}
+      {currentScreen === 'resetPassword' && (
+        <ResetPasswordScreen
+          onBack={() => setCurrentScreen('signin')}
+          onSendSuccess={(email) => {
+            alert(`Mã xác nhận đặt lại mật khẩu đã được gửi tới ${email}!`);
+            setCurrentScreen('verification');
           }}
         />
       )}
