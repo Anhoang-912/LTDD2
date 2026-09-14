@@ -8,11 +8,13 @@ import SignInScreen from './src/screens/SignInScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
 import VerificationScreen from './src/screens/VerificationScreen';
 import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
+import HomeScreen from './src/screens/HomeScreen';
+import MenuWhiteScreen from './src/screens/MenuWhiteScreen';
 
 export default function App() {
-  // 1. Luôn khởi đầu từ màn hình 'splash'
-  const [currentScreen, setCurrentScreen] = useState('splash');
-  // Lưu thông tin tài khoản đã đăng ký để kiểm tra khi đăng nhập
+  // Mặc định hiển thị màn 'home' để bạn xem và test ngay
+  // (Bạn có thể đổi thành 'splash' để chạy toàn bộ từ đầu)
+  const [currentScreen, setCurrentScreen] = useState('home');
   const [registeredUser, setRegisteredUser] = useState(null);
 
   return (
@@ -46,7 +48,7 @@ export default function App() {
         />
       )}
 
-      {/* 5. Màn hình Sign In (Trước Sign Up; có tài khoản rồi thì đăng nhập được ngay) */}
+      {/* 5. Màn hình Sign In */}
       {currentScreen === 'signin' && (
         <SignInScreen
           registeredUser={registeredUser}
@@ -57,7 +59,7 @@ export default function App() {
         />
       )}
 
-      {/* 6. Màn hình Sign Up (Dành cho người dùng chưa có tài khoản đăng ký) */}
+      {/* 6. Màn hình Sign Up */}
       {currentScreen === 'signup' && (
         <SignUpScreen
           onBack={() => setCurrentScreen('signin')}
@@ -70,18 +72,19 @@ export default function App() {
         />
       )}
 
-      {/* 7. Màn hình Verification (Đăng nhập thành công mới verify) */}
+      {/* 7. Màn hình Verification */}
       {currentScreen === 'verification' && (
         <VerificationScreen
           phoneNumber="+1 2620 0323 7631"
           onBack={() => setCurrentScreen('signin')}
           onSuccess={(code) => {
             alert(`Xác thực thành công với mã: ${code}`);
+            setCurrentScreen('home');
           }}
         />
       )}
 
-      {/* 8. Màn hình Reset Password (Khi nhấn Forgot Password ở Sign In) */}
+      {/* 8. Màn hình Reset Password */}
       {currentScreen === 'resetPassword' && (
         <ResetPasswordScreen
           onBack={() => setCurrentScreen('signin')}
@@ -89,6 +92,21 @@ export default function App() {
             alert(`Mã xác nhận đặt lại mật khẩu đã được gửi tới ${email}!`);
             setCurrentScreen('verification');
           }}
+        />
+      )}
+
+      {/* 9. Màn hình Home (Trang chủ) */}
+      {currentScreen === 'home' && (
+        <HomeScreen
+          onOpenMenu={() => setCurrentScreen('menuWhite')}
+        />
+      )}
+
+      {/* 10. Màn hình Menu White (Khi bấm dấu 3 gạch ở trang Home) */}
+      {currentScreen === 'menuWhite' && (
+        <MenuWhiteScreen
+          onClose={() => setCurrentScreen('home')}
+          onSignOut={() => setCurrentScreen('signin')}
         />
       )}
     </View>
