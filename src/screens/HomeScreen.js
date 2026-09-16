@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 
-export default function HomeScreen({ onOpenMenu }) {
+export default function HomeScreen({ onOpenMenu, onEventPress }) {
   const [activeCategory, setActiveCategory] = useState('Sports');
 
   // Danh sách các danh mục sự kiện
@@ -93,13 +93,19 @@ export default function HomeScreen({ onOpenMenu }) {
         {/* Mục Upcoming Events */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Upcoming Events</Text>
-          <Text style={styles.seeAllText}>See All ▸</Text>
+          <TouchableOpacity onPress={onEventPress}>
+            <Text style={styles.seeAllText}>See All ▸</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Danh sách thẻ sự kiện lướt ngang */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20 }}>
-          {/* Thẻ sự kiện 1 */}
-          <View style={styles.eventCard}>
+          {/* Thẻ sự kiện 1 - Bấm vào mở Event Details */}
+          <TouchableOpacity
+            style={styles.eventCard}
+            activeOpacity={0.9}
+            onPress={onEventPress}
+          >
             <View style={styles.cardImageBox}>
               <Image source={require('../assets/image/home-2.png')} style={styles.cardImage} resizeMode="cover" />
               {/* Badge ngày 10 JUNE */}
@@ -130,10 +136,14 @@ export default function HomeScreen({ onOpenMenu }) {
               <Ionicons name="location-sharp" size={14} color="#747688" />
               <Text style={styles.locationText} numberOfLines={1}>36 Guild Street London, UK</Text>
             </View>
-          </View>
+          </TouchableOpacity>
 
           {/* Thẻ sự kiện 2 */}
-          <View style={styles.eventCard}>
+          <TouchableOpacity
+            style={styles.eventCard}
+            activeOpacity={0.9}
+            onPress={onEventPress}
+          >
             <View style={styles.cardImageBox}>
               <Image source={require('../assets/image/event-card-2.png')} style={styles.cardImage} resizeMode="cover" />
               <View style={styles.dateBadge}>
@@ -159,7 +169,7 @@ export default function HomeScreen({ onOpenMenu }) {
               <Ionicons name="location-sharp" size={14} color="#747688" />
               <Text style={styles.locationText} numberOfLines={1}>Radius Gallery, Santa Cruz</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         </ScrollView>
 
         {/* Banner mời bạn bè (Invite your friends) */}

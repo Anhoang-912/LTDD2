@@ -10,11 +10,12 @@ import VerificationScreen from './src/screens/VerificationScreen';
 import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import MenuWhiteScreen from './src/screens/MenuWhiteScreen';
+import EventDetailsScreen from './src/screens/EventDetailsScreen';
 
 export default function App() {
-  // Mặc định hiển thị màn 'home' để bạn xem và test ngay
-  // (Bạn có thể đổi thành 'splash' để chạy toàn bộ từ đầu)
-  const [currentScreen, setCurrentScreen] = useState('home');
+  // Đặt mặc định 'eventDetails' để bạn xem và kiểm tra ngay màn hình mới
+  // (Bạn có thể đổi thành 'home' hoặc 'splash' để chạy các luồng khác)
+  const [currentScreen, setCurrentScreen] = useState('eventDetails');
   const [registeredUser, setRegisteredUser] = useState(null);
 
   return (
@@ -99,6 +100,7 @@ export default function App() {
       {currentScreen === 'home' && (
         <HomeScreen
           onOpenMenu={() => setCurrentScreen('menuWhite')}
+          onEventPress={() => setCurrentScreen('eventDetails')}
         />
       )}
 
@@ -107,6 +109,13 @@ export default function App() {
         <MenuWhiteScreen
           onClose={() => setCurrentScreen('home')}
           onSignOut={() => setCurrentScreen('signin')}
+        />
+      )}
+
+      {/* 11. Màn hình Event Details (Chi tiết sự kiện) */}
+      {currentScreen === 'eventDetails' && (
+        <EventDetailsScreen
+          onBack={() => setCurrentScreen('home')}
         />
       )}
     </View>
