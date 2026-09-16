@@ -11,11 +11,11 @@ import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import MenuWhiteScreen from './src/screens/MenuWhiteScreen';
 import EventDetailsScreen from './src/screens/EventDetailsScreen';
+import MapViewScreen from './src/screens/MapViewScreen';
 
 export default function App() {
-  // Đặt mặc định 'eventDetails' để bạn xem và kiểm tra ngay màn hình mới
-  // (Bạn có thể đổi thành 'home' hoặc 'splash' để chạy các luồng khác)
-  const [currentScreen, setCurrentScreen] = useState('eventDetails');
+  // Luôn khởi đầu từ màn hình Splash theo đúng trình tự từ đầu đến cuối
+  const [currentScreen, setCurrentScreen] = useState('splash');
   const [registeredUser, setRegisteredUser] = useState(null);
 
   return (
@@ -101,6 +101,7 @@ export default function App() {
         <HomeScreen
           onOpenMenu={() => setCurrentScreen('menuWhite')}
           onEventPress={() => setCurrentScreen('eventDetails')}
+          onMapPress={() => setCurrentScreen('mapView')}
         />
       )}
 
@@ -116,6 +117,14 @@ export default function App() {
       {currentScreen === 'eventDetails' && (
         <EventDetailsScreen
           onBack={() => setCurrentScreen('home')}
+        />
+      )}
+
+      {/* 12. Màn hình Map View (Bản đồ sự kiện) */}
+      {currentScreen === 'mapView' && (
+        <MapViewScreen
+          onBack={() => setCurrentScreen('home')}
+          onEventPress={() => setCurrentScreen('eventDetails')}
         />
       )}
     </View>

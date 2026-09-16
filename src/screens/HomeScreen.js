@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 
-export default function HomeScreen({ onOpenMenu, onEventPress }) {
+export default function HomeScreen({ onOpenMenu, onEventPress, onMapPress }) {
   const [activeCategory, setActiveCategory] = useState('Sports');
 
   // Danh sách các danh mục sự kiện
@@ -210,10 +210,10 @@ export default function HomeScreen({ onOpenMenu, onEventPress }) {
           </View>
         </View>
 
-        <View style={styles.tabItem}>
+        <TouchableOpacity style={styles.tabItem} onPress={onMapPress} activeOpacity={0.7}>
           <Ionicons name="location-outline" size={22} color="#747688" />
           <Text style={styles.tabLabel}>Map</Text>
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.tabItem}>
           <Ionicons name="person-outline" size={21} color="#747688" />
